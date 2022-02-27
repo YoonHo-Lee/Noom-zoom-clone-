@@ -22,9 +22,12 @@ const wss = new WebSocket.Server({ server })
 //  server에 wss를 넣음.
 // * ws만 쓰려면 express쪽 코드가 필요 없음. 
 
-function handelConnection(socket) {
-    console.log(socket);
-}
-
-wss.on("connection", handelConnection)
+wss.on("connection", (socket) => {
+    console.log("Connect to Browser ✅");                                           // Connect 이벤트 리스너
+    socket.on("close", () => { console.log("Disconnect from the Browser ❌"); })    // Disconnect 이벤트 리스너
+    socket.on("message", (message) => {                                             // Message를 받을때 이벤트 리스너
+        console.log("New message : ", message.toString('utf8'));
+    })
+    socket.send("hello socket!!!")
+})
 server.listen(3000, handleListen)
