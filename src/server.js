@@ -22,12 +22,15 @@ const wss = new WebSocket.Server({ server })
 //  server에 wss를 넣음.
 // * ws만 쓰려면 express쪽 코드가 필요 없음. 
 
+const sockets = [];
+
 wss.on("connection", (socket) => {
-    console.log("Connect to Browser ✅");                                           // Connect 이벤트 리스너
+    sockets.push(socket);
+    console.log("Connect to Browser ✅");    
     socket.on("close", () => { console.log("Disconnect from the Browser ❌"); })    // Disconnect 이벤트 리스너
     socket.on("message", (message) => {                                             // Message를 받을때 이벤트 리스너
-        console.log("New message : ", message.toString('utf8'));
+        // console.log("New message : ", message.toString('utf8'));
+        sockets.forEach(aSocket => aSocket.send(message.toString()))
     })
-    socket.send("hello socket!!!")
 })
 server.listen(3000, handleListen)
